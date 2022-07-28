@@ -1,4 +1,5 @@
 import { useCachedDataQuery } from '@dhis2/analytics'
+import { useSetting } from '@dhis2/app-service-datastore'
 import i18n from '@dhis2/d2-i18n'
 import {
     CssVariables,
@@ -11,7 +12,7 @@ import {
 } from '@dhis2/ui'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { acClearCurrent, acSetCurrentFromUi } from '../actions/current.js'
+import { acClearCurrent, acSetCurrentFromUi, tSetCurrentFromUi } from '../actions/current.js'
 import { tSetDimensions } from '../actions/dimensions.js'
 import { clearAll, tDoLoadVisualization } from '../actions/index.js'
 import { acAddMetadata } from '../actions/metadata.js'
@@ -20,9 +21,8 @@ import { acAddParentGraphMap, acSetUiFromVisualization } from '../actions/ui.js'
 import { acReceivedUser, tLoadUserAuthority } from '../actions/user.js'
 import { acClearVisualization } from '../actions/visualization.js'
 import {
-    apiFetchAOFromUserDataStore,
-    CURRENT_AO_KEY,
-} from '../api/userDataStore.js'
+    USER_DATASTORE_CURRENT_AO_KEY,
+} from '../modules/currentAnalyticalObject.js'
 import { Snackbar } from '../components/Snackbar/Snackbar.js'
 import history from '../modules/history.js'
 import defaultMetadata from '../modules/metadata.js'
@@ -45,6 +45,8 @@ import './App.css'
 import './scrollbar.css'
 
 const App = () => {
+    const [currentAO] = useSetting(USER_DATASTORE_CURRENT_AO_KEY)
+
     const [previousLocation, setPreviousLocation] = useState()
     const [initialLoadIsComplete, setInitialLoadIsComplete] = useState(false)
     const [locationToConfirm, setLocationToConfirm] = useState()
@@ -93,21 +95,18 @@ const App = () => {
         return false
     }
 
-    const loadVisualization = async (location) => {
+    const loadVisualization = (location) => {
         if (location.pathname.length > 1) {
             // /currentAnalyticalObject
             // /${id}/
             // /${id}/interpretation/${interpretationId}
             const { id } = parseLocation(location)
 
-            const urlContainsCurrentAOKey = id === CURRENT_AO_KEY
+            const urlContainsCurrentAOKey = id === USER_DATASTORE_CURRENT_AO_KEY
 
             if (urlContainsCurrentAOKey) {
-                // use dataQuery
-                const AO = await apiFetchAOFromUserDataStore()
-
                 dispatch(acAddParentGraphMap(
-                    getParentGraphMapFromVisualization(AO)
+                    getParentGraphMapFromVisualization(currentAO)
                 ))
 
                 // clear visualization and current
@@ -116,12 +115,12 @@ const App = () => {
                 dispatch(acClearVisualization())
                 dispatch(acClearCurrent())
 
-                dispatch(acSetUiFromVisualization(AO))
-                dispatch(acSetCurrentFromUi(ui))
+                dispatch(acSetUiFromVisualization(currentAO))
+                dispatch(tSetCurrentFromUi())
             }
 
             if (!urlContainsCurrentAOKey && isRefetchNeeded(location)) {
-                await dispatch(tDoLoadVisualization({
+                dispatch(tDoLoadVisualization({
                     id,
                     ouLevels: orgUnitLevels,
                 }))

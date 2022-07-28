@@ -1,11 +1,13 @@
 import { CachedDataQueryProvider } from '@dhis2/analytics'
 import { useDataEngine } from '@dhis2/app-runtime'
+import { DataStoreProvider } from '@dhis2/app-service-datastore'
 import React from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import thunk from 'redux-thunk'
 import App from './components/App.js'
 import configureStore from './configureStore.js'
 import metadataMiddleware from './middleware/metadata.js'
+import { USER_DATASTORE_NAMESPACE } from './modules/currentAnalyticalObject'
 import { systemSettingsKeys } from './modules/systemSettings.js'
 import {
     userSettingsKeys,
@@ -86,12 +88,14 @@ const AppWrapper = () => {
 
     return (
         <ReduxProvider store={store}>
-            <CachedDataQueryProvider
-                query={query}
-                dataTransformation={providerDataTransformation}
-            >
-                <App />
-            </CachedDataQueryProvider>
+            <DataStoreProvider namespace={USER_DATASTORE_NAMESPACE}>
+                <CachedDataQueryProvider
+                    query={query}
+                    dataTransformation={providerDataTransformation}
+                >
+                    <App />
+                </CachedDataQueryProvider>
+            </DataStoreProvider>
         </ReduxProvider>
     )
 }
