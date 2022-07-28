@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 import App from './components/App.js'
 import configureStore from './configureStore.js'
 import metadataMiddleware from './middleware/metadata.js'
-import { USER_DATASTORE_NAMESPACE } from './modules/currentAnalyticalObject'
+import { USER_DATASTORE_NAMESPACE } from './modules/currentAnalyticalObject.js'
 import { systemSettingsKeys } from './modules/systemSettings.js'
 import {
     userSettingsKeys,

@@ -20,10 +20,10 @@ import { acAddSettings } from '../actions/settings.js'
 import { acAddParentGraphMap, acSetUiFromVisualization } from '../actions/ui.js'
 import { acReceivedUser, tLoadUserAuthority } from '../actions/user.js'
 import { acClearVisualization } from '../actions/visualization.js'
+import { Snackbar } from '../components/Snackbar/Snackbar.js'
 import {
     USER_DATASTORE_CURRENT_AO_KEY,
 } from '../modules/currentAnalyticalObject.js'
-import { Snackbar } from '../components/Snackbar/Snackbar.js'
 import history from '../modules/history.js'
 import defaultMetadata from '../modules/metadata.js'
 import { getParentGraphMapFromVisualization } from '../modules/ui.js'
