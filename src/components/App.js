@@ -12,7 +12,11 @@ import {
 } from '@dhis2/ui'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { acClearCurrent, acSetCurrentFromUi, tSetCurrentFromUi } from '../actions/current.js'
+import {
+    acClearCurrent,
+    acSetCurrentFromUi,
+    tSetCurrentFromUi,
+} from '../actions/current.js'
 import { tSetDimensions } from '../actions/dimensions.js'
 import { clearAll, tDoLoadVisualization } from '../actions/index.js'
 import { acAddMetadata } from '../actions/metadata.js'
@@ -21,9 +25,7 @@ import { acAddParentGraphMap, acSetUiFromVisualization } from '../actions/ui.js'
 import { acReceivedUser, tLoadUserAuthority } from '../actions/user.js'
 import { acClearVisualization } from '../actions/visualization.js'
 import { Snackbar } from '../components/Snackbar/Snackbar.js'
-import {
-    USER_DATASTORE_CURRENT_AO_KEY,
-} from '../modules/currentAnalyticalObject.js'
+import { USER_DATASTORE_CURRENT_AO_KEY } from '../modules/currentAnalyticalObject.js'
 import history from '../modules/history.js'
 import defaultMetadata from '../modules/metadata.js'
 import { getParentGraphMapFromVisualization } from '../modules/ui.js'
@@ -57,7 +59,8 @@ const App = () => {
     const ui = useSelector(sGetUi)
     const visualization = useSelector(sGetVisualization)
 
-    const { currentUser, orgUnitLevels, rootOrgUnits, userSettings } = useCachedDataQuery()
+    const { currentUser, orgUnitLevels, rootOrgUnits, userSettings } =
+        useCachedDataQuery()
 
     const interpretationsUnitRef = useRef()
     const onInterpretationUpdate = () => {
@@ -85,10 +88,7 @@ const App = () => {
         const id = location.pathname.slice(1).split('/')[0]
         const prevId = previousLocation.slice(1).split('/')[0]
 
-        if (
-            id !== prevId ||
-            previousLocation === location.pathname
-        ) {
+        if (id !== prevId || previousLocation === location.pathname) {
             return true
         }
 
@@ -105,9 +105,11 @@ const App = () => {
             const urlContainsCurrentAOKey = id === USER_DATASTORE_CURRENT_AO_KEY
 
             if (urlContainsCurrentAOKey) {
-                dispatch(acAddParentGraphMap(
-                    getParentGraphMapFromVisualization(currentAO)
-                ))
+                dispatch(
+                    acAddParentGraphMap(
+                        getParentGraphMapFromVisualization(currentAO)
+                    )
+                )
 
                 // clear visualization and current
                 // to avoid leave them "dirty" when navigating to
@@ -120,10 +122,12 @@ const App = () => {
             }
 
             if (!urlContainsCurrentAOKey && isRefetchNeeded(location)) {
-                dispatch(tDoLoadVisualization({
-                    id,
-                    ouLevels: orgUnitLevels,
-                }))
+                dispatch(
+                    tDoLoadVisualization({
+                        id,
+                        ouLevels: orgUnitLevels,
+                    })
+                )
             }
         } else {
             dispatch(clearAll())
@@ -168,10 +172,7 @@ const App = () => {
 
             if (
                 // currently editing
-                getVisualizationState(
-                    visualization,
-                    current
-                ) === STATE_DIRTY &&
+                getVisualizationState(visualization, current) === STATE_DIRTY &&
                 // wanting to navigate elsewhere
                 previousLocation !== location.pathname &&
                 // not saving
@@ -201,12 +202,7 @@ const App = () => {
         )
 
         window.addEventListener('beforeunload', (event) => {
-            if (
-                getVisualizationState(
-                    visualization,
-                    current
-                ) === STATE_DIRTY
-            ) {
+            if (getVisualizationState(visualization, current) === STATE_DIRTY) {
                 event.preventDefault()
                 event.returnValue = i18n.t('You have unsaved changes.')
             }
@@ -242,9 +238,7 @@ const App = () => {
                                 <TitleBar />
                             </div>
                             <div className="main-center-canvas flex-grow-1">
-                                {initialLoadIsComplete && (
-                                    <Visualization />
-                                )}
+                                {initialLoadIsComplete && <Visualization />}
                                 {current && (
                                     <InterpretationModal
                                         onInterpretationUpdate={
@@ -258,9 +252,7 @@ const App = () => {
                     {ui.rightSidebarOpen && current && (
                         <div className="main-right">
                             <DetailsPanel
-                                interpretationsUnitRef={
-                                    interpretationsUnitRef
-                                }
+                                interpretationsUnitRef={interpretationsUnitRef}
                             />
                         </div>
                     )}
@@ -285,25 +277,19 @@ const App = () => {
 
                                     history.back()
                                 }}
-                                dataTest={
-                                    'confirm-leave-modal-option-cancel'
-                                }
+                                dataTest={'confirm-leave-modal-option-cancel'}
                             >
                                 {i18n.t('No, cancel')}
                             </Button>
 
                             <Button
                                 onClick={() => {
-                                    loadVisualization(
-                                        locationToConfirm
-                                    )
+                                    loadVisualization(locationToConfirm)
 
                                     setLocationToConfirm(null)
                                 }}
                                 primary
-                                dataTest={
-                                    'confirm-leave-modal-option-confirm'
-                                }
+                                dataTest={'confirm-leave-modal-option-confirm'}
                             >
                                 {i18n.t('Yes, leave')}
                             </Button>

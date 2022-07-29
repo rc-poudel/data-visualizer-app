@@ -8,7 +8,10 @@ import React, { useState, createRef } from 'react'
 import { connect } from 'react-redux'
 import { acSetUi, acClearSeriesType } from '../../actions/ui.js'
 import ArrowDown from '../../assets/ArrowDown.js'
-import { prepareCurrentAnalyticalObject, USER_DATASTORE_CURRENT_AO_KEY } from '../../modules/currentAnalyticalObject.js'
+import {
+    prepareCurrentAnalyticalObject,
+    USER_DATASTORE_CURRENT_AO_KEY,
+} from '../../modules/currentAnalyticalObject.js'
 import { getAdaptedUiByType } from '../../modules/ui.js'
 import {
     visTypes,
@@ -33,7 +36,9 @@ const UnconnectedVisualizationTypeSelector = ({
 }) => {
     const { baseUrl } = useConfig()
 
-    const [/* actual value not used */, { set }] = useSetting(USER_DATASTORE_CURRENT_AO_KEY)
+    const [, /* actual value not used */ { set }] = useSetting(
+        USER_DATASTORE_CURRENT_AO_KEY
+    )
     const [listIsOpen, setListIsOpen] = useState(false)
 
     const toggleList = () => setListIsOpen(!listIsOpen)
